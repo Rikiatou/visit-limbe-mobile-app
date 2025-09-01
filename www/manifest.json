@@ -1,0 +1,128 @@
+{
+  "id": "com.visitlimbe.app",
+  "name": "Visit Limbe - Tourism Platform with 20 Modules",
+  "short_name": "Visit Limbe",
+  "description": "Complete tourism platform for Limbe, Cameroon with hotels, restaurants, attractions, transportation, shopping, jobs, health, education and 12 more modules",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#2563eb",
+  "theme_color": "#2563eb",
+  "orientation": "portrait",
+  "scope": "/",
+  "lang": "en",
+  "dir": "ltr",
+  "categories": ["travel", "tourism", "lifestyle", "business"],
+  "iarc_rating_id": "e84b072d-71b3-4d3e-86ae-31a8ce4e53b7",
+  "launch_handler": {
+    "client_mode": "navigate-existing"
+  },
+  "edge_side_panel": {
+    "preferred_width": 400
+  },
+  "handle_links": "preferred",
+  "protocol_handlers": [],
+  "url_handlers": [],
+  "lock_screen": {},
+  "note_taking": {},
+  "widgets": [],
+  "screenshots": [
+    {
+      "src": "assets/screenshots/mobile-home.png",
+      "sizes": "390x844",
+      "type": "image/png",
+      "form_factor": "narrow"
+    },
+    {
+      "src": "assets/screenshots/desktop-home.png", 
+      "sizes": "1920x1080",
+      "type": "image/png",
+      "form_factor": "wide"
+    }
+  ],
+  "icons": [
+    {
+      "src": "assets/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-96x96.png",
+      "sizes": "96x96", 
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-128x128.png",
+      "sizes": "128x128",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-144x144.png",
+      "sizes": "144x144",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-152x152.png",
+      "sizes": "152x152",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-384x384.png",
+      "sizes": "384x384",
+      "type": "image/png",
+      "purpose": "maskable any"
+    },
+    {
+      "src": "assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable any"
+    }
+  ],
+  "related_applications": [
+    {
+      "platform": "play",
+      "url": "https://play.google.com/store/apps/details?id=com.visitlimbe.app",
+      "id": "com.visitlimbe.app"
+    }
+  ],
+  "prefer_related_applications": false,
+  "scope_extensions": [
+    {
+      "origin": "https://visit-limbe-real-app-20.surge.sh"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Réservation d'hôtels",
+      "short_name": "Hôtels",
+      "description": "Réserver des hôtels à Limbe",
+      "url": "/visit-limbe-app-preview.html#hotels",
+      "icons": [{ "src": "assets/icons/hotel-shortcut.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Shopping local",
+      "short_name": "Shopping", 
+      "description": "Acheter des produits locaux",
+      "url": "/visit-limbe-app-preview.html#shopping",
+      "icons": [{ "src": "assets/icons/shopping-shortcut.png", "sizes": "96x96" }]
+    },
+    {
+      "name": "Offres d'emploi",
+      "short_name": "Emplois",
+      "description": "Trouver des emplois à Limbe",
+      "url": "/visit-limbe-app-preview.html#jobs",
+      "icons": [{ "src": "assets/icons/job-shortcut.png", "sizes": "96x96" }]
+    }
+  ]
+}
