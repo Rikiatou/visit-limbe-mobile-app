@@ -1,0 +1,37 @@
+{
+  "name": "visit-limbe-app",
+  "version": "1.0.0",
+  "description": "Visit Limbe Tourism Mobile App",
+  "main": "index.js",
+  "dependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2"
+  },
+  "devDependencies": {
+    "@capacitor/android": "^6.1.2",
+    "@capacitor/cli": "^6.1.2",
+    "@capacitor/core": "^6.1.2"
+  },
+  "scripts": {
+    "build": "echo 'Using existing build in www/'",
+    "capacitor:init": "npx cap init 'Visit Limbe' 'com.visitlimbe.app' --web-dir=www",
+    "capacitor:add-android": "npx cap add android",
+    "capacitor:sync": "npx cap sync android",
+    "build:android": "cd android && ./gradlew assembleDebug"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Rikiatou/visit-limbe-mobile-app.git"
+  },
+  "keywords": [
+    "tourism",
+    "limbe",
+    "cameroon",
+    "mobile-app",
+    "capacitor",
+    "android"
+  ],
+  "author": "Visit Limbe Team",
+  "license": "MIT"
+}
