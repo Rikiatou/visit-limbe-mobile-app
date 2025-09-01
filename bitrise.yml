@@ -3,6 +3,16 @@ default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
 
 project_type: other
 
+app:
+  envs:
+  - BITRISE_PROJECT_PATH: "."
+  - BITRISE_EXPORT_METHOD: development
+
+meta:
+  bitrise.io:
+    stack: linux-docker-android-20.04
+    machine_type_id: standard
+
 workflows:
   primary:
     description: |
@@ -99,8 +109,3 @@ trigger_map:
   workflow: primary
 - pull_request_source_branch: "*"
   workflow: primary
-
-app:
-  envs:
-  - BITRISE_PROJECT_PATH: "."
-  - BITRISE_EXPORT_METHOD: development
