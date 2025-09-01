@@ -1,0 +1,94 @@
+---
+format_version: '11'
+default_step_lib_source: https://github.com/bitrise-io/bitrise-steplib.git
+
+project_type: other
+
+app:
+  envs:
+  - ANDROID_HOME: "/opt/android-sdk-linux"
+
+workflows:
+  primary:
+    description: Build Visit Limbe PWA and generate APK
+    steps:
+    - activate-ssh-key@4:
+        run_if: '{{getenv "SSH_RSA_PRIVATE_KEY" | ne ""}}'
+    - git-clone@8: {}
+    - script@1:
+        title: Setup Build Environment
+        inputs:
+        - content: |
+            #!/usr/bin/env bash
+            set -ex
+            
+            echo "=== Visit Limbe Mobile App Build ==="
+            echo "Building PWA for APK generation..."
+            
+            # Create build directory
+            mkdir -p build
+            
+            # Copy app files to build
+            cp -r www/* build/
+            
+            # Verify app structure
+            ls -la build/
+            echo "App size: $(du -sh build/)"
+            
+            echo "✅ PWA build ready for APK generation"
+    
+    - script@1:
+        title: Install Node.js and Android Tools
+        inputs:
+        - content: |
+            #!/usr/bin/env bash
+            set -ex
+            
+            # Install Node.js 18
+            curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+            sudo apt-get install -y nodejs
+            
+            # Verify installations
+            node --version
+            npm --version
+            
+            echo "✅ Node.js installed"
+    
+    - script@1:
+        title: Generate APK with Capacitor
+        inputs:
+        - content: |
+            #!/usr/bin/env bash
+            set -ex
+            
+            # Install Capacitor
+            npm install -g @capacitor/core @capacitor/cli @capacitor/android
+            
+            # Initialize Capacitor project
+            npx cap init "Visit Limbe" "com.visitlimbe.app" --web-dir=build
+            
+            # Add Android platform
+            npx cap add android
+            
+            # Copy web assets to native project
+            npx cap copy android
+            npx cap sync android
+            
+            # Build Android APK
+            cd android
+            chmod +x ./gradlew
+            ./gradlew assembleDebug --stacktrace
+            
+            # Copy APK to artifacts
+            mkdir -p $BITRISE_DEPLOY_DIR
+            find . -name "*.apk" -type f
+            cp app/build/outputs/apk/debug/app-debug.apk $BITRISE_DEPLOY_DIR/visit-limbe-app.apk
+            
+            echo "✅ APK generated successfully!"
+            ls -la $BITRISE_DEPLOY_DIR/
+    
+    - deploy-to-bitrise-io@2:
+        inputs:
+        - deploy_path: "$BITRISE_DEPLOY_DIR"
+        - notify_user_groups: "everyone"
+        - is_enable_public_page: true
