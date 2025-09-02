@@ -66,14 +66,14 @@ workflows:
             # Install Capacitor dependencies locally
             npm install @capacitor/android @capacitor/cli @capacitor/core
             
-            # Initialize Capacitor project with configuration
-            npx cap init "Visit Limbe" "com.visitlimbe.app" --web-dir=www
+            # Use existing capacitor.config.json (already in repo)
+            echo "✅ Using existing Capacitor configuration"
+            cat capacitor.config.json
             
-            # Add Android platform
-            npx cap add android
-            
-            # Ensure capacitor.config.json is properly configured
-            echo "✅ Capacitor configuration created"
+            # Add Android platform if not exists
+            if [ ! -d "android" ]; then
+                npx cap add android
+            fi
             
             # Copy web assets to native project and sync
             npx cap copy android
