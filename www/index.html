@@ -27,6 +27,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Chart.js for Analytics -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- Capacitor Core (for native app functionality) -->
+    <script type="module" src="https://unpkg.com/@capacitor/core@6.1.2/dist/capacitor.js"></script>
     <!-- Supabase JavaScript Client -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <!-- Advanced Features Script -->
@@ -33769,20 +33771,6 @@
             applyAppSettings();
         }
         function updateDefaultLanguage(lang) { saveAppSettingsFromUI(); switchLanguage(lang); }
-        
-        // Scroll to features section
-        function scrollToFeatures() {
-            console.log('scrollToFeatures called');
-            const featuresSection = document.getElementById('featuresSection');
-            if (featuresSection) {
-                featuresSection.scrollIntoView({ 
-                    behavior: 'smooth',
-                    block: 'start'
-                });
-            } else {
-                console.log('Features section not found');
-            }
-        }
 
         // Category Image Upload Function
         async function uploadCategoryImage(category, fileInput) {
@@ -38060,21 +38048,6 @@
             }, 1500); // Show loading for 1.5 seconds
         }
 
-    function showWelcomePageAlt() {
-            hideAllPages();
-            hideLoadingScreen(); // Hide loading screen when showing welcome page
-            const welcomePage = document.getElementById('welcomePage');
-            if (welcomePage) {
-                welcomePage.classList.add('active');
-                welcomePage.style.display = 'block';
-                console.log('Welcome page displayed');
-            } else {
-                console.error('Welcome page not found');
-                // Fallback to dashboard if welcome page missing
-                showUserDashboard();
-            }
-        }
-
         function createContactWidget() {
             // Create floating contact widget
             const existingWidget = document.getElementById('contactWidget');
@@ -39623,8 +39596,12 @@
         // Initialize authentication on page load
         document.addEventListener('DOMContentLoaded', async function() {
             try {
-                // Register Service Worker for PWA
-                if ('serviceWorker' in navigator) {
+                // Check if running in Capacitor (native app)
+                const isCapacitor = window.Capacitor && window.Capacitor.isNativePlatform();
+                console.log('Running in Capacitor:', isCapacitor);
+                
+                // Register Service Worker only for web (not in Capacitor)
+                if ('serviceWorker' in navigator && !isCapacitor) {
                     try {
                         const registration = await navigator.serviceWorker.register('/sw.js');
                         console.log('Service Worker registered:', registration);
@@ -39692,15 +39669,66 @@
                     }
                 } catch(e) { console.warn('Failed to setup Supabase real-time', e); }
                 
+                // Ensure welcome page is shown after initialization
+                console.log('App initialization complete - showing welcome page');
+                showWelcomePage();
+                
                 // Hide loading screen after initialization
-                setTimeout(hideLoadingScreen, 1000);
+                setTimeout(() => {
+                    hideLoadingScreen();
+                    // Double-check welcome page is visible
+                    const welcomePage = document.getElementById('welcomePage');
+                    if (welcomePage) {
+                        welcomePage.style.display = 'block';
+                        welcomePage.classList.add('active');
+                        console.log('Welcome page confirmed visible');
+                    }
+                }, 1500);
             } catch (error) {
                 console.error('Failed to initialize app:', error);
                 // Fallback to welcome page if auth fails
                 showWelcomePage();
                 // Hide loading screen even if error
-                setTimeout(hideLoadingScreen, 500);
+                setTimeout(() => {
+                    hideLoadingScreen();
+                    // Show welcome page as fallback
+                    const welcomePage = document.getElementById('welcomePage');
+                    if (welcomePage) {
+                        welcomePage.style.display = 'block';
+                        welcomePage.classList.add('active');
+                        console.log('Welcome page shown as fallback');
+                    }
+                }, 1000);
             }
+        });
+        
+        // Additional Capacitor initialization for native apps
+        document.addEventListener('capacitorReady', function() {
+            console.log('Capacitor is ready - native app initialized');
+            // Ensure app shows welcome page in native mode
+            setTimeout(() => {
+                showWelcomePage();
+                hideLoadingScreen();
+                console.log('Native app initialization complete');
+            }, 500);
+        });
+        
+        // Fallback for Capacitor apps - if DOM loads but Capacitor isn't ready yet
+        window.addEventListener('load', function() {
+            console.log('Window loaded');
+            // Wait a bit more and ensure welcome page is shown
+            setTimeout(() => {
+                const loadingEl = document.getElementById('appLoading');
+                const welcomeEl = document.getElementById('welcomePage');
+                
+                if (loadingEl && loadingEl.style.display !== 'none') {
+                    console.log('Loading screen still visible - forcing welcome page');
+                    hideLoadingScreen();
+                    if (welcomeEl) {
+                        showWelcomePage();
+                    }
+                }
+            }, 3000); // 3 second failsafe
         });
         
         // Test function to debug buttons
