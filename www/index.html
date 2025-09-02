@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -10687,10 +10687,39 @@
                 loading.style.display = 'none';
             }
         }
-        
+
+        // Global error handler: log error and ensure loading screen is removed
+        window.onerror = function(message, source, lineno, colno, error) {
+            try {
+                console.error('Global error caught:', { message, source, lineno, colno, error });
+            } catch (e) {
+                // swallow logging errors
+            }
+            // Try to unstick the loading screen so users can continue
+            forceHideLoading();
+            // Allow default handling to continue
+            return false;
+        };
+
+        // Handle unhandled promise rejections similarly
+        window.addEventListener('unhandledrejection', function(evt) {
+            try {
+                console.error('Unhandled promise rejection:', evt.reason);
+            } catch (e) {}
+            forceHideLoading();
+        });
+
+        // Fallback: force hide loading after 10s if something blocks initialization
+        setTimeout(() => {
+            forceHideLoading();
+            console.warn('Fallback: appLoading hidden after timeout to avoid stuck loading screen');
+        }, 10000);
+
         // Enhanced Button Handlers with Visual Feedback
-        function handleGetStarted() {
-            const button = event.target.closest('.btn-primary-cta');
+        function handleGetStarted(e) {
+            const ev = e || window.event;
+            const target = ev && ev.target ? ev.target : null;
+            const button = target ? target.closest('.btn-primary-cta') : document.querySelector('.btn-primary-cta');
             if (button) {
                 // Add loading state
                 button.classList.add('btn-loading');
@@ -10709,8 +10738,10 @@
             }
         }
 
-        function handleDiscoverMore() {
-            const button = event.target.closest('.btn-secondary-cta');
+        function handleDiscoverMore(e) {
+            const ev = e || window.event;
+            const target = ev && ev.target ? ev.target : null;
+            const button = target ? target.closest('.btn-secondary-cta') : document.querySelector('.btn-secondary-cta');
             if (button) {
                 // Add visual feedback
                 button.style.transform = 'scale(0.95)';
@@ -18546,67 +18577,7 @@
                 default:
                     return createGenericCard(moduleType, item, isAdmin);
             }
-        }
-                    icon: 'fas fa-images',
-                    subcategories: ['Tourist Photos', 'Cultural Events', 'Nature', 'Architecture', 'People']
-                },
-                services: {
-                    title: 'Local Services',
-                    description: 'Various local service providers',
-                    icon: 'fas fa-tools',
-                    subcategories: ['Cleaning', 'Repairs', 'Beauty', 'Legal', 'Consulting']
-                },
-                finance: {
-                    title: 'Finance & Banking',
-                    description: 'Financial services and banking',
-                    icon: 'fas fa-money-bill-wave',
-                    subcategories: ['Banks', 'ATMs', 'Money Transfer', 'Insurance', 'Investments']
-                },
-                events: {
-                    title: 'Events & Entertainment',
-                    description: 'Local events and entertainment options',
-                    icon: 'fas fa-calendar-alt',
-                    subcategories: ['Festivals', 'Concerts', 'Sports', 'Nightlife', 'Community Events']
-                },
-                jobs: {
-                    title: 'Jobs & Employment',
-                    description: 'Job listings and employment opportunities',
-                    icon: 'fas fa-briefcase',
-                },
-                realestate: {
-                    title: 'Real Estate',
-                    description: 'Property listings and real estate services',
-                    icon: 'fas fa-building',
-                    subcategories: ['For Sale', 'For Rent', 'Commercial', 'Land', 'Vacation Rentals']
-                },
-                streaming: {
-                    title: 'Streaming & Media',
-                    description: 'Video content and streaming services',
-                    icon: 'fas fa-play-circle',
-                    subcategories: ['Live Streams', 'Video On Demand', 'Podcasts', 'Music', 'Educational Content']
-                },
-                smartgro: {
-                    title: 'SmartGro Agriculture',
-                    description: 'Agricultural marketplace and farm services',
-                    icon: 'fas fa-seedling',
-                    subcategories: ['Fresh Produce', 'Farm Equipment', 'Seeds & Plants', 'Agricultural Tips', 'Farm Services']
-                },
-                callcenter: {
-                    title: 'Call Center & Support',
-                    description: 'Emergency contacts and support services',
-                    icon: 'fas fa-phone',
-                    subcategories: ['Emergency Services', 'Tourist Support', 'Technical Support', 'Information', 'Complaints']
-                }
-            };
-
-            const config = moduleConfigs[moduleType];
-            if (config) {
-                document.getElementById('moduleTitle').value = config.title;
-                document.getElementById('moduleDescription').value = config.description;
-                document.getElementById('moduleIcon').value = config.icon;
-            }
-        }
-
+    }
         function loadSubcategories() {
             // Simulate loading subcategories from database
             const subcategoriesHtml = `
@@ -19053,48 +19024,8 @@
         function loadModuleContent(moduleType) {
             currentModuleName = moduleType;
             
-            // Load module-specific content from database
-            const moduleConfigs = {
-                booking: {
-                    title: 'Booking & Accommodation',
-                    description: 'Hotels, tours, activities, and accommodation services',
-                    icon: 'fas fa-hotel',
-                    subcategories: ['Hotels', 'Tours', 'Activities', 'Restaurants', 'Attractions']
-                },
-                shopping: {
-                    title: 'Shopping & Marketplace',
-                    description: 'Local products, crafts, and marketplace services',
-                    icon: 'fas fa-shopping-bag',
-                    subcategories: ['Local Crafts', 'Souvenirs', 'Electronics', 'Fashion', 'Food Items']
-                },
-                health: {
-                    title: 'Health & Medical',
-                    description: 'Hospitals, clinics, and medical services',
-                    icon: 'fas fa-heartbeat',
-                    subcategories: ['Hospitals', 'Clinics', 'Pharmacies', 'Emergency', 'Specialists']
-                },
-                education: {
-                    title: 'Education & Learning',
-                    description: 'Schools, universities, and educational programs',
-                    icon: 'fas fa-graduation-cap',
-                    subcategories: ['Primary Schools', 'Secondary Schools', 'Universities', 'Training Centers', 'Libraries']
-                },
-                transport: {
-                    title: 'Transport & Logistics',
-                    description: 'Vehicle rentals, routes, and transport services',
-                    icon: 'fas fa-car',
-                    subcategories: ['Car Rentals', 'Bike Rentals', 'Public Transport', 'Taxi Services', 'Logistics']
-                },
-                culture: {
-                    title: 'Culture & Heritage',
-                    description: 'Cultural sites, events, and traditional activities',
-                    icon: 'fas fa-landmark',
-                    subcategories: ['Historic Sites', 'Museums', 'Art Galleries', 'Cultural Events', 'Traditions']
-                },
-                maps: {
-                    title: 'Maps & Navigation',
-                    description: 'Location services and navigation assistance',
-                    icon: 'fas fa-map-marked-alt',
+            // Load module-specific content from database (uses global `moduleConfigs` declared earlier)
+        
         // ============== MODULE-SPECIFIC CARD CREATORS ==============
 
         function createHotelCard(hotel, isAdmin) {
@@ -19931,69 +19862,6 @@
                     </div>
                 </div>
             `;
-        }
-                    icon: 'fas fa-images',
-                    subcategories: ['Tourist Photos', 'Cultural Events', 'Nature', 'Architecture', 'People']
-                },
-                services: {
-                    title: 'Local Services',
-                    description: 'Various local service providers',
-                    icon: 'fas fa-tools',
-                    subcategories: ['Cleaning', 'Repairs', 'Beauty', 'Legal', 'Consulting']
-                },
-                finance: {
-                    title: 'Finance & Banking',
-                    description: 'Financial services and banking',
-                    icon: 'fas fa-money-bill-wave',
-                    subcategories: ['Banks', 'ATMs', 'Money Transfer', 'Insurance', 'Investments']
-                },
-                events: {
-                    title: 'Events & Entertainment',
-                    description: 'Local events and entertainment options',
-                    icon: 'fas fa-calendar-alt',
-                    subcategories: ['Festivals', 'Concerts', 'Sports', 'Nightlife', 'Community Events']
-                },
-                jobs: {
-                    title: 'Jobs & Employment',
-                    description: 'Job listings and employment opportunities',
-                    icon: 'fas fa-briefcase',
-                    subcategories: ['Full-time Jobs', 'Part-time Jobs', 'Internships', 'Freelance', 'Volunteer']
-                },
-                realestate: {
-                    title: 'Real Estate',
-                    description: 'Property listings and real estate services',
-                    icon: 'fas fa-building',
-                    subcategories: ['For Sale', 'For Rent', 'Commercial', 'Land', 'Vacation Rentals']
-                },
-                streaming: {
-                    title: 'Streaming & Media',
-                    description: 'Video content and streaming services',
-                    icon: 'fas fa-play-circle',
-                    subcategories: ['Live Streams', 'Video On Demand', 'Podcasts', 'Music', 'Educational Content']
-                },
-                smartgro: {
-                    title: 'SmartGro Agriculture',
-                    description: 'Agricultural marketplace and farm services',
-                    icon: 'fas fa-seedling',
-                    subcategories: ['Fresh Produce', 'Farm Equipment', 'Seeds & Plants', 'Agricultural Tips', 'Farm Services']
-                },
-                callcenter: {
-                    title: 'Call Center & Support',
-                    description: 'Emergency contacts and support services',
-                    icon: 'fas fa-phone',
-                    subcategories: ['Emergency Services', 'Tourist Support', 'Technical Support', 'Information', 'Complaints']
-                }
-            };
-
-            const config = moduleConfigs[moduleType];
-            if (config) {
-                document.getElementById('moduleTitle').value = config.title;
-                document.getElementById('moduleDescription').value = config.description;
-                document.getElementById('moduleIcon').value = config.icon;
-                
-                // Load subcategories dropdown
-                loadSubcategoryDropdown(config.subcategories);
-            }
         }
 
         function loadSubcategoryDropdown(subcategories) {
